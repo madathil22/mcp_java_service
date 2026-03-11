@@ -1,9 +1,15 @@
 server:
-  port: 9090
+  port: 8080
   servlet:
     context-path: /mcpservice
 
 spring:
+  ai:
+    mcp:
+      server:
+        name: mcp-java-service
+        version: 0.0.1
+        protocol: STREAMABLE
   datasource:
     url: jdbc:hsqldb:mem:companydb
     driver-class-name: org.hsqldb.jdbc.JDBCDriver
