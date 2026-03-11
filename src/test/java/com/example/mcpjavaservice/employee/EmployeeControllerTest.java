@@ -44,4 +44,66 @@ class EmployeeControllerTest {
             .andExpect(jsonPath("$[2].departmentId").value(30))
             .andExpect(jsonPath("$[2].departmentName").value("Finance"));
     }
+
+    @Test
+    void shouldReturnDepartmentById() throws Exception {
+        mockMvc.perform(get("/api/departments/10"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.departmentId").value(10))
+            .andExpect(jsonPath("$.departmentName").value("Engineering"));
+    }
+
+    @Test
+    void shouldReturnDepartmentByNameCaseInsensitive() throws Exception {
+        mockMvc.perform(get("/api/departments/name/engineering"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.departmentId").value(10))
+            .andExpect(jsonPath("$.departmentName").value("Engineering"));
+    }
+
+    @Test
+    void shouldReturnEmployeesByDepartmentId() throws Exception {
+        mockMvc.perform(get("/api/departments/10/employees"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].employeeId").value(1))
+            .andExpect(jsonPath("$[1].employeeId").value(2));
+    }
+
+    @Test
+    void shouldReturnEmployeeById() throws Exception {
+        mockMvc.perform(get("/api/employees/2"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.employeeId").value(2))
+            .andExpect(jsonPath("$.name").value("Brian Smith"));
+    }
+
+    @Test
+    void shouldReturnEmployeesByDepartmentName() throws Exception {
+        mockMvc.perform(get("/api/employees/by-department/engineering"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$[0].employeeId").value(1))
+            .andExpect(jsonPath("$[1].employeeId").value(2));
+    }
+
+    @Test
+    void shouldReturn404ForMissingDepartment() throws Exception {
+        mockMvc.perform(get("/api/departments/999"))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.status").value(404))
+            .andExpect(jsonPath("$.error").value("Not Found"))
+            .andExpect(jsonPath("$.message").value("Department not found with id: 999"))
+            .andExpect(jsonPath("$.path").value("/api/departments/999"))
+            .andExpect(jsonPath("$.timestamp").exists());
+    }
+
+    @Test
+    void shouldReturn404ForMissingEmployee() throws Exception {
+        mockMvc.perform(get("/api/employees/999"))
+            .andExpect(status().isNotFound())
+            .andExpect(jsonPath("$.status").value(404))
+            .andExpect(jsonPath("$.error").value("Not Found"))
+            .andExpect(jsonPath("$.message").value("Employee not found with id: 999"))
+            .andExpect(jsonPath("$.path").value("/api/employees/999"))
+            .andExpect(jsonPath("$.timestamp").exists());
+    }
 }

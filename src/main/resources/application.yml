@@ -4,6 +4,12 @@ server:
     context-path: /mcpservice
 
 spring:
+  ai:
+    mcp:
+      server:
+        name: mcp-java-service
+        version: 0.0.1
+        protocol: STREAMABLE
   datasource:
     url: jdbc:hsqldb:mem:companydb
     driver-class-name: org.hsqldb.jdbc.JDBCDriver
