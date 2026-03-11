@@ -1,0 +1,65 @@
+{
+  "name": "Java 21 Spring Boot DevPod Workspace",
+  "image": "mcr.microsoft.com/devcontainers/java:1-21-bookworm",
+
+  "runArgs": [
+    "--cpus=2.5",
+    "--memory=8g"
+  ],
+
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    },
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/common-utils:2": {}
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "openai.chatgpt",
+        "vscjava.vscode-java-pack",
+        "vscjava.vscode-gradle",
+        "vscjava.vscode-java-debug",
+        "vscjava.vscode-java-test",
+        "redhat.vscode-yaml",
+        "eamodio.gitlens",
+        "ms-azuretools.vscode-docker"
+      ],
+      "settings": {
+        "java.configuration.updateBuildConfiguration": "automatic",
+        "java.import.gradle.wrapper.enabled": true,
+        "java.import.gradle.jvmArguments": "-Xmx1536m",
+        "java.debug.settings.hotCodeReplace": "auto",
+        "editor.formatOnSave": true,
+        "files.watcherExclude": {
+          "**/.git/**": true,
+          "**/build/**": true,
+          "**/.gradle/**": true
+        },
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  },
+
+  "containerEnv": {
+    "JAVA_TOOL_OPTIONS": "-Xms512m -Xmx3072m",
+    "GRADLE_OPTS": "-Xmx1536m -Dorg.gradle.daemon=true -Dorg.gradle.parallel=true -Dorg.gradle.workers.max=2"
+  },
+
+  "forwardPorts": [8080, 5005],
+  "portsAttributes": {
+    "8080": {
+      "label": "Spring Boot App",
+      "onAutoForward": "notify"
+    },
+    "5005": {
+      "label": "Java Debug",
+      "onAutoForward": "silent"
+    }
+  },
+
+  "postCreateCommand": "java -version && ./gradlew --version || gradle --version",
+  "remoteUser": "vscode"
+}
