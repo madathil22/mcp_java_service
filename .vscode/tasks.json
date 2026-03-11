@@ -1,0 +1,71 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Gradle: bootRun",
+            "type": "shell",
+            "command": "${workspaceFolder}/gradlew",
+            "args": [
+                "bootRun"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Gradle: test",
+            "type": "shell",
+            "command": "${workspaceFolder}/gradlew",
+            "args": [
+                "test"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": "test",
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "Gradle: bootRun (debug)",
+            "type": "shell",
+            "command": "${workspaceFolder}/gradlew",
+            "args": [
+                "bootRun",
+                "--debug-jvm"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "isBackground": true,
+            "presentation": {
+                "reveal": "always",
+                "panel": "dedicated"
+            },
+            "problemMatcher": {
+                "owner": "java",
+                "pattern": {
+                    "regexp": "^(.*)$",
+                    "message": 1
+                },
+                "background": {
+                    "activeOnStart": true,
+                    "beginsPattern": ".*Starting process 'command '.+java'.*",
+                    "endsPattern": ".*Listening for transport dt_socket at address: 5005.*"
+                }
+            }
+        }
+    ]
+}

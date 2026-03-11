@@ -1,0 +1,20 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Spring Boot (Gradle bootRun)",
+            "type": "java",
+            "request": "attach",
+            "hostName": "127.0.0.1",
+            "port": 5005,
+            "preLaunchTask": "Gradle: bootRun (debug)"
+        },
+        {
+            "name": "Launch Spring Boot Main",
+            "type": "java",
+            "request": "launch",
+            "mainClass": "com.example.mcpjavaservice.McpJavaServiceApplication",
+            "projectName": "mcpjavaservice"
+        }
+    ]
+}
