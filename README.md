@@ -1,58 +1,41 @@
-# MCP Java Service
+# 🤖 MCP Java Service
 
-Spring Boot 3.2 service with:
+A Spring Boot service that exposes a single chat API for a UI, uses Spring AI to interpret natural-language company queries, and delegates the actual work to MCP-style tools backed by a PostgreSQL database.
 
-- a REST API for employees and departments
-- Swagger UI for interactive API testing
-- an in-memory HSQL database seeded at startup
-- Spring AI MCP server support in the same application
+## ✨ What It Does
 
-## Stack
+- Accepts user prompts like `give me all employees in engineering`
+- Uses Spring AI + OpenAI to decide which backend tool to call
+- Exposes MCP tools from `CompanyMcpTools` for employee and department queries
+- Serves Swagger UI for quick inspection
+- Connects to PostgreSQL instead of an in-memory database
+- Initializes schema and seed data idempotently on startup
+
+## 🧱 Stack
 
 - Java 21
 - Gradle
-- Spring Boot 3.2.0
+- Spring Boot 3.2
 - Spring Web MVC
 - Spring Data JPA
-- HSQLDB
-- Springdoc OpenAPI / Swagger UI
+- Spring AI
+- OpenAI model starter
 - Spring AI MCP Server (WebMVC)
+- PostgreSQL
+- Springdoc OpenAPI / Swagger UI
 
-## Running The App
+## 🗂️ Project Shape
 
-Start the application:
-
-```bash
-./gradlew bootRun
+```text
+src/main/java/com/example/mcpjavaservice
+src/main/java/com/example/mcp
+src/main/resources
+src/test/java
+.vscode
+.env
 ```
 
-Run tests:
-
-```bash
-./gradlew test
-```
-
-## Default Configuration
-
-- Port: `8080`
-- Context path: `/mcpservice`
-- Swagger UI: `http://localhost:8080/mcpservice/swagger-ui.html`
-- OpenAPI JSON: `http://localhost:8080/mcpservice/v3/api-docs`
-
-## Database Model
-
-The in-memory HSQL database is initialized from `schema.sql` and `data.sql`.
-
-Tables:
-
-- `employee`
-  Columns: `employee_id`, `name`, `age`, `gender`
-- `department`
-  Columns: `department_id`, `department_name`
-- `employee_department`
-  Columns: `employee_id`, `department_id`
-
-## REST API
+## 🔌 Main HTTP Endpoint
 
 Base path:
 
@@ -60,53 +43,49 @@ Base path:
 /mcpservice/api
 ```
 
-### Existing list endpoints
+Chat endpoint:
 
-- `GET /getallemployees`
-- `GET /getalldepartments`
-
-### Department endpoints
-
-- `GET /departments/{id}`
-- `GET /departments/name/{name}`
-- `GET /departments/{id}/employees`
-
-### Employee endpoints
-
-- `GET /employees/{id}`
-- `GET /employees/by-department/{departmentName}`
-
-## Example Requests
-
-```bash
-curl http://localhost:8080/mcpservice/api/getallemployees
-curl http://localhost:8080/mcpservice/api/getalldepartments
-curl http://localhost:8080/mcpservice/api/departments/10
-curl http://localhost:8080/mcpservice/api/departments/name/engineering
-curl http://localhost:8080/mcpservice/api/departments/10/employees
-curl http://localhost:8080/mcpservice/api/employees/2
-curl http://localhost:8080/mcpservice/api/employees/by-department/engineering
+```http
+POST /mcpservice/api/chat
+Content-Type: application/json
 ```
 
-## Error Responses
-
-Not found cases return structured JSON like this:
+Request body:
 
 ```json
 {
-  "timestamp": "2026-03-11T03:00:00Z",
-  "status": 404,
-  "error": "Not Found",
-  "message": "Department not found with id: 999",
-  "path": "/mcpservice/api/departments/999"
+  "message": "Give me all employees for department Engineering"
 }
 ```
 
-## MCP Server
+Response body:
 
-This application also exposes MCP tools from [CompanyMcpTools.java](/workspaces/mcpjavaservice/src/main/java/com/example/mcp/CompanyMcpTools.java).
+```json
+{
+  "reply": "Engineering has 30 employees ..."
+}
+```
 
-Available tools:
+Example curl:
+
+```bash
+curl -X POST http://localhost:8080/mcpservice/api/chat \
+  -H 'Content-Type: application/json' \
+  -d '{"message":"Give me all employees for department Engineering"}'
+```
+
+## 🧠 How The Chat Flow Works
+
+1. The UI sends a natural-language prompt to `/api/chat`.
+2. `ChatService` builds a Spring AI `ChatClient` request.
+3. Spring AI exposes `CompanyMcpTools` as callable tools.
+4. The model decides which tool to invoke.
+5. The tool uses the normal service/repository layer.
+6. The backend returns the final assistant reply to the UI.
+
+## 🛠️ MCP Tools Available
+
+Defined in [src/main/java/com/example/mcp/CompanyMcpTools.java](/workspaces/mcpjavaservice/src/main/java/com/example/mcp/CompanyMcpTools.java):
 
 - `listDepartments`
 - `getDepartmentById`
@@ -115,19 +94,120 @@ Available tools:
 - `getEmployeeById`
 - `getEmployeesByDepartment`
 
-The MCP tool layer calls the same service layer as the REST API and does not call HTTP endpoints internally.
+## 🗃️ Database
 
-## Project Layout
+The service now uses PostgreSQL:
 
-```text
-src/main/java/com/example/mcpjavaservice
-src/main/java/com/example/mcp
-src/main/resources
-src/test/java
+- Host: `host.docker.internal`
+- Port: `5432`
+- Database: `mcpdb`
+- User: `mcpuser`
+
+Configured in [src/main/resources/application.yml](/workspaces/mcpjavaservice/src/main/resources/application.yml).
+
+### Schema Initialization
+
+Startup SQL still runs because `spring.sql.init.mode=always`, but it is now safe for an existing database:
+
+- `schema.sql` uses `CREATE TABLE IF NOT EXISTS`
+- `data.sql` uses `ON CONFLICT DO NOTHING`
+
+That means startup will:
+
+- create tables only if missing
+- insert sample data only if the rows do not already exist
+
+### Seed Data
+
+The sample seed currently contains:
+
+- 10 departments
+- 300 employees
+- 300 employee-to-department assignments
+
+## 🔐 Environment Variables
+
+The app reads secrets from environment variables:
+
+- `OPENAI_API_KEY`
+- `POSTGRES_PASSWORD`
+
+Example `.env`:
+
+```env
+OPENAI_API_KEY=your_openai_key_here
+POSTGRES_PASSWORD=your_postgres_password_here
 ```
 
-## Notes
+## ▶️ Running The App
 
-- Department-name lookup is case-insensitive in both REST and MCP flows.
-- Swagger and MCP server support coexist in the same application.
-- The database is in-memory, so data resets on restart.
+Start from the terminal:
+
+```bash
+export OPENAI_API_KEY=your_openai_key_here
+export POSTGRES_PASSWORD=your_postgres_password_here
+./gradlew bootRun
+```
+
+Or use the VS Code task:
+
+- `Gradle: bootRun`
+
+Your `.vscode/tasks.json` is configured to source `${workspaceFolder}/.env` automatically before running `bootRun`.
+
+## 🐞 Debugging
+
+VS Code debug options are configured in `.vscode/launch.json`:
+
+- `Debug Spring Boot (Gradle bootRun)`
+- `Launch Spring Boot Main`
+
+Both are wired to work with `.env`.
+
+## 📘 Swagger
+
+Swagger UI:
+
+- `http://localhost:8080/mcpservice/swagger-ui/index.html`
+
+OpenAPI JSON:
+
+- `http://localhost:8080/mcpservice/v3/api-docs`
+
+CORS is configured to allow requests from:
+
+- `http://localhost:5174`
+
+and covers:
+
+- `/api/**`
+- `/swagger-ui/**`
+- `/swagger-ui.html`
+- `/v3/api-docs/**`
+
+## ⚠️ Notes
+
+- The HTTP surface is intentionally small: the UI should call `/api/chat`.
+- The MCP tools are still available inside the app as the backend capability layer.
+- If `OPENAI_API_KEY` is missing or invalid, chat requests will fail.
+- If PostgreSQL is unavailable, the app will fail on startup.
+
+## 🚀 Useful Commands
+
+Run the app:
+
+```bash
+./gradlew bootRun
+```
+
+Compile only:
+
+```bash
+./gradlew classes
+```
+
+Run tests:
+
+```bash
+./gradlew test
+```
