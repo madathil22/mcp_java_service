@@ -1,6 +1,8 @@
 package com.example.mcpjavaservice.api;
 
 import com.example.mcp.CompanyMcpTools;
+import com.example.mcpjavaservice.ui.response.ChatResponse;
+
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;

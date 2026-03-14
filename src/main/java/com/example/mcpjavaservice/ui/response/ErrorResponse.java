@@ -1,4 +1,4 @@
-package com.example.mcpjavaservice.api;
+package com.example.mcpjavaservice.ui.response;
 
 import java.time.Instant;
 

@@ -1,4 +1,4 @@
-package com.example.mcpjavaservice.api;
+package com.example.mcpjavaservice.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -16,9 +16,26 @@ public class CorsConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
+        String[] allowedMethods = {"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"};
+
         registry.addMapping("/api/**")
             .allowedOrigins(allowedOrigins)
-            .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
+            .allowedMethods(allowedMethods)
+            .allowedHeaders("*");
+
+        registry.addMapping("/swagger-ui/**")
+            .allowedOrigins(allowedOrigins)
+            .allowedMethods(allowedMethods)
+            .allowedHeaders("*");
+
+        registry.addMapping("/swagger-ui.html")
+            .allowedOrigins(allowedOrigins)
+            .allowedMethods(allowedMethods)
+            .allowedHeaders("*");
+
+        registry.addMapping("/v3/api-docs/**")
+            .allowedOrigins(allowedOrigins)
+            .allowedMethods(allowedMethods)
             .allowedHeaders("*");
     }
 }

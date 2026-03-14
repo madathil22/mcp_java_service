@@ -1,4 +1,4 @@
-package com.example.mcpjavaservice.api;
+package com.example.mcpjavaservice.ui.request;
 
 public record ChatRequest(
     String message

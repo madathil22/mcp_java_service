@@ -2,6 +2,8 @@ package com.example.mcpjavaservice.api;
 
 import com.example.mcpjavaservice.department.DepartmentNotFoundException;
 import com.example.mcpjavaservice.employee.EmployeeNotFoundException;
+import com.example.mcpjavaservice.ui.response.ErrorResponse;
+
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

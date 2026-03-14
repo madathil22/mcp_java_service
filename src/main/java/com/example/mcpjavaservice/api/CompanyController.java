@@ -7,6 +7,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.mcpjavaservice.ui.request.ChatRequest;
+import com.example.mcpjavaservice.ui.response.ChatResponse;
+
 @RestController
 @RequestMapping("/api")
 @Tag(name = "Company", description = "Chat endpoint for company directory queries")
