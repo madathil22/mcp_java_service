@@ -10,6 +10,8 @@ spring:
         name: mcp-java-service
         version: 0.0.1
         protocol: STREAMABLE
+    openai:
+      api-key: ${OPENAI_API_KEY:}
   datasource:
     url: jdbc:hsqldb:mem:companydb
     driver-class-name: org.hsqldb.jdbc.JDBCDriver
@@ -26,3 +28,7 @@ spring:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
+
+app:
+  cors:
+    allowed-origins: http://localhost:5174

@@ -25,4 +25,19 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(status).body(errorResponse);
     }
+
+    @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
+    public ResponseEntity<ErrorResponse> handleBadRequest(RuntimeException exception, HttpServletRequest request) {
+        HttpStatus status = exception instanceof IllegalStateException
+            ? HttpStatus.SERVICE_UNAVAILABLE
+            : HttpStatus.BAD_REQUEST;
+        ErrorResponse errorResponse = new ErrorResponse(
+            Instant.now(),
+            status.value(),
+            status.getReasonPhrase(),
+            exception.getMessage(),
+            request.getRequestURI()
+        );
+        return ResponseEntity.status(status).body(errorResponse);
+    }
 }

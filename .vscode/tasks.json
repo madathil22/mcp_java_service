@@ -4,9 +4,10 @@
         {
             "label": "Gradle: bootRun",
             "type": "shell",
-            "command": "${workspaceFolder}/gradlew",
+            "command": "bash",
             "args": [
-                "bootRun"
+                "-lc",
+                "set -a; source '${workspaceFolder}/.env'; set +a; '${workspaceFolder}/gradlew' bootRun"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
@@ -41,10 +42,10 @@
         {
             "label": "Gradle: bootRun (debug)",
             "type": "shell",
-            "command": "${workspaceFolder}/gradlew",
+            "command": "bash",
             "args": [
-                "bootRun",
-                "--debug-jvm"
+                "-lc",
+                "set -a; source '${workspaceFolder}/.env'; set +a; '${workspaceFolder}/gradlew' bootRun --debug-jvm"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
