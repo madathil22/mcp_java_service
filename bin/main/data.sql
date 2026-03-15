@@ -8,7 +8,8 @@ INSERT INTO department (department_id, department_name) VALUES
     (70, 'Customer Support'),
     (80, 'Information Technology'),
     (90, 'Legal'),
-    (100, 'Research and Development');
+    (100, 'Research and Development')
+ON CONFLICT (department_id) DO NOTHING;
 
 INSERT INTO employee (employee_id, name, age, gender) VALUES
     (1, 'Alex Anderson', 25, 'Male'),
@@ -310,7 +311,8 @@ INSERT INTO employee (employee_id, name, age, gender) VALUES
     (297, 'Kai Diaz', 55, 'Male'),
     (298, 'Kennedy Diaz', 58, 'Female'),
     (299, 'Logan Diaz', 22, 'Male'),
-    (300, 'Morgan Diaz', 25, 'Female');
+    (300, 'Morgan Diaz', 25, 'Female')
+ON CONFLICT (employee_id) DO NOTHING;
 
 INSERT INTO employee_department (employee_id, department_id) VALUES
     (1, 10),
@@ -612,4 +614,5 @@ INSERT INTO employee_department (employee_id, department_id) VALUES
     (297, 100),
     (298, 100),
     (299, 100),
-    (300, 100);
+    (300, 100)
+ON CONFLICT (employee_id, department_id) DO NOTHING;

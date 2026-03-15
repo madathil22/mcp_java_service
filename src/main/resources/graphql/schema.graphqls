@@ -1,0 +1,54 @@
+type Query {
+  employees(filter: EmployeeFilterInput): [Employee!]!
+  departments(filter: DepartmentFilterInput): [Department!]!
+  countEmployeesByDepartment(filter: DepartmentFilterInput): [DepartmentEmployeeCount!]!
+}
+
+type Employee {
+  employeeId: ID!
+  name: String!
+  age: Int!
+  gender: String!
+  departments: [DepartmentSummary!]!
+}
+
+type Department {
+  departmentId: ID!
+  departmentName: String!
+  employeeCount: Int!
+  employees: [EmployeeSummary!]!
+}
+
+type EmployeeSummary {
+  employeeId: ID!
+  name: String!
+  age: Int!
+  gender: String!
+}
+
+type DepartmentSummary {
+  departmentId: ID!
+  departmentName: String!
+}
+
+type DepartmentEmployeeCount {
+  departmentId: ID!
+  departmentName: String!
+  employeeCount: Int!
+}
+
+input EmployeeFilterInput {
+  nameContains: String
+  departmentName: String
+  gender: String
+  minAge: Int
+  maxAge: Int
+}
+
+input DepartmentFilterInput {
+  departmentName: String
+  employeeName: String
+  employeeGender: String
+  employeeMinAge: Int
+  employeeMaxAge: Int
+}

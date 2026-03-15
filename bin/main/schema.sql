@@ -1,16 +1,16 @@
-CREATE TABLE department (
+CREATE TABLE IF NOT EXISTS department (
     department_id BIGINT PRIMARY KEY,
     department_name VARCHAR(100) NOT NULL
 );
 
-CREATE TABLE employee (
+CREATE TABLE IF NOT EXISTS employee (
     employee_id BIGINT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     age INTEGER NOT NULL,
     gender VARCHAR(20) NOT NULL
 );
 
-CREATE TABLE employee_department (
+CREATE TABLE IF NOT EXISTS employee_department (
     employee_id BIGINT NOT NULL,
     department_id BIGINT NOT NULL,
     PRIMARY KEY (employee_id, department_id),

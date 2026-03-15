@@ -23,6 +23,11 @@ public class CorsConfig implements WebMvcConfigurer {
             .allowedMethods(allowedMethods)
             .allowedHeaders("*");
 
+        registry.addMapping("/graphql")
+            .allowedOrigins(allowedOrigins)
+            .allowedMethods(allowedMethods)
+            .allowedHeaders("*");
+
         registry.addMapping("/swagger-ui/**")
             .allowedOrigins(allowedOrigins)
             .allowedMethods(allowedMethods)
