@@ -1,14 +1,14 @@
 package com.example.mcpjavaservice.employee;
 
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface EmployeeRepository extends JpaRepository<Employee, Long> {
+public interface EmployeeRepository extends JpaRepository<Employee, Long>, JpaSpecificationExecutor<Employee> {
 
     @Override
     @EntityGraph(attributePaths = {"employeeDepartments", "employeeDepartments.department"})
@@ -16,26 +16,9 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
     @Override
     @EntityGraph(attributePaths = {"employeeDepartments", "employeeDepartments.department"})
-    Optional<Employee> findById(Long id);
+    List<Employee> findAll(Sort sort);
 
+    @Override
     @EntityGraph(attributePaths = {"employeeDepartments", "employeeDepartments.department"})
-    @Query("""
-        select distinct e
-        from Employee e
-        left join e.employeeDepartments ed
-        left join ed.department d
-        where lower(d.departmentName) = lower(:departmentName)
-        order by e.employeeId
-        """)
-    List<Employee> findAllByDepartmentNameIgnoreCase(@Param("departmentName") String departmentName);
-
-    @EntityGraph(attributePaths = {"employeeDepartments", "employeeDepartments.department"})
-    @Query("""
-        select distinct e
-        from Employee e
-        left join e.employeeDepartments ed
-        where ed.department.departmentId = :departmentId
-        order by e.employeeId
-        """)
-    List<Employee> findAllByDepartmentId(@Param("departmentId") Long departmentId);
+    List<Employee> findAll(Specification<Employee> spec, Sort sort);
 }

@@ -13,9 +13,9 @@ spring:
     openai:
       api-key: ${OPENAI_API_KEY:}
   datasource:
-    url: jdbc:postgresql://localhost/companydb
+    url: jdbc:postgresql://host.docker.internal:5432/mcpdb
     driver-class-name: org.postgresql.Driver
-    username: postgres
+    username: mcpuser
     password: ${POSTGRES_PASSWORD:}
   jpa:
     hibernate:
